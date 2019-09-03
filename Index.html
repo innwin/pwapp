@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>PWA demo</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="144x144" href="images/logo-144.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-fallback-test-class="sr-only"
+        asp-fallback-test-property="position" asp-fallback-test-value="absolute"
+        integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="css/site.css"/>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary"> 
+            <a class="navbar-brand" href="javascript:void(0);">PWA demo</a>
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"> 
+                <span class="navbar-toggler-icon"></span> 
+            </button>
+            <div class="navbar-collapse collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active"> 
+                        <a class="nav-link" href="javascript:void(0);">
+                            Home <span class="sr-only">(current)</span>
+                        </a> 
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link" href="javascript:void(0);">Link</a> 
+                    </li>
+                    <li class="nav-item"> 
+                        <a class="nav-link disabled" href="javascript:void(0);">Disabled</a> 
+                    </li>
+                </ul>
+                <form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container">
+        <button id="btnInstall" class="btn btn-primary m-3" role="button" href="javascript:void(0);" aria-hidden="true" style="display: none">
+            安装
+        </button>
+
+        <p class="mt-3">必须使用http链接打开才可以看到安装按钮，用文件系统打开是不能看到的。</p>
+        <p>如使用 Visual Studio Code 打开可以使用 <a target="_blank" href="https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer">Live Server</a> 插件轻松实现使用http链接打开。</p>
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center"> 
+            <span class="text-muted">Copyright © 2019 PWAPP</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"
+        asp-fallback-src="~/lib/jquery/dist/jquery.min.js" asp-fallback-test="window.jQuery"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"
+        asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+        asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+        integrity="sha256-fzFFyH01cBVPYzl16KT40wqjhgPtq6FFUB6ckN2+GGw=" crossorigin="anonymous">
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/pwacompat@2.0.9/pwacompat.min.js"
+        integrity="sha384-VcI6S+HIsE80FVM1jgbd6WDFhzKYA0PecD/LcIyMQpT4fMJdijBh0I7Iblaacawc" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').then(function () {
+                console.log('Service Worker 注册成功');
+            });
+        }
+
+        var dfdPrompt = null;
+        var btnInstall = $("#btnInstall");
+        $(function () {
+            window.addEventListener('beforeinstallprompt', function (e) {
+                // 存储事件
+                dfdPrompt = e;
+                // 显示按钮
+                btnInstall.show();
+                // 阻止默认事件
+                e.preventDefault();
+                return false;
+            });
+
+            btnInstall.on("click", function () {
+                if (dfdPrompt == null) {
+                    return;
+                }
+                // 通过按钮点击事件触发横幅显示
+                dfdPrompt.prompt();
+                // 监控用户的安装行为
+                dfdPrompt.userChoice.then(function (choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        btnInstall.hide();
+                        dfdPrompt = null;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
