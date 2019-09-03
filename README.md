@@ -1,8 +1,6 @@
 # PWA demo
 
-<div align="center">
-    <img src="images/logo-144.png" width="80"/>
-</div>
+<img src="images/logo-144.png" width="80"/>
 
 PWA最简单例子。用最简单方法实现了多平台兼容的配置和离线缓存功能。
 
